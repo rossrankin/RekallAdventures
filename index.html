@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekall Adventures</title>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; padding: 0; overflow-x: hidden; }
+        body { background-color: #0a0a0a; color: #ffffff; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { 
+            background: linear-gradient(90deg, #1a1a1a, #2a2a2a); 
+            padding: 15px 20px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 0 15px #ff007a; 
+        }
+
+        .logo { 
+            font-size: 1.8em; 
+            color: #ff007a; 
+            text-shadow: 0 0 10px #ff007a; 
+            margin-left: 20px; 
+            transition: transform 0.3s ease; 
+        }
+
+        .logo:hover { 
+            transform: scale(1.1); 
+            text-shadow: 0 0 20px #ff007a; 
+        }
+
+        nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 20px;
+            position: relative;
+        }
+
+        nav a {
+            display: block;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.3em;
+            text-shadow: 0 0 5px #ffffff;
+            padding: 20px 20px;
+            position: relative;
+            transition: none;
+        }
+
+        nav a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ff007a;
+            z-index: -1;
+            transition: none;
+            transform: scaleY(0);
+            transform-origin: top;
+        }
+
+        nav a:hover::before {
+            transform: scaleY(1); /* The background now fills from top to bottom */
+        }
+
+        main { flex: 1; padding-top: 80px; padding-bottom: 60px; }
+
+        .story-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 20px; 
+            padding: 40px; 
+            max-width: 100%; 
+        }
+
+        .story-box { 
+            border: 3px solid #ff007a; 
+            padding: 0; 
+            box-shadow: inset 0 0 10px #ff007a, 0 0 10px #ff007a; 
+            text-align: center; 
+            transition: transform 0.2s ease; 
+            overflow: hidden; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            position: relative; 
+            height: 450px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-end; 
+        }
+
+        .story-box:hover { 
+            transform: scale(1.02); 
+        }
+
+        .story-banner { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            z-index: -1; 
+            transition: transform 0.3s ease-in-out; 
+        }
+
+        .story-box:hover .story-banner { 
+            transform: scale(1.1); 
+        }
+
+        .story-content { 
+            position: relative; 
+            padding: 15px; 
+            background: rgba(0, 0, 0, 0.7); 
+            border-radius: 10px; 
+            margin: 10px; 
+            color: #ffffff; 
+            width: calc(100% - 20px); 
+            text-align: center; 
+        }
+
+        .story-box a { 
+            display: block; 
+            text-decoration: none; 
+            color: inherit; 
+            height: 100%; 
+            width: 100%; 
+        }
+
+        footer { 
+            background-color: #1a1a1a; 
+            padding: 20px; 
+            text-align: center; 
+            color: #ffffff; 
+            font-size: 0.9em; 
+            width: 100%; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Rekall Adventures</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">Stories</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="story-grid">
+            <a href="story1.html" class="story-box" style="background-image: url('C:/Users/rosso/Documents/Web/ShadowByte/1.webp');">
+                <div class="story-content">
+                    <h2>ShadowByte's Heist</h2>
+                    <p>A rogue hacker infiltrates a mega-corp to steal a powerful AI core.</p>
+                </div>
+            </a>
+            <a href="story2.html" class="story-box" style="background-image: url('C:/Users/rosso/Documents/Web/ShadowByte/2.webp');">
+                <div class="story-content">
+                    <h2>Chrome Rebellion</h2>
+                    <p>Lead a resistance against a dystopian regime.</p>
+                </div>
+            </a>
+            <a href="story3.html" class="story-box" style="background-image: url('C:/Users/rosso/Documents/Web/ShadowByte/3.webp');">
+                <div class="story-content">
+                    <h2>Neon Drift</h2>
+                    <p>Race through a cyberpunk city in a high-stakes chase.</p>
+                </div>
+            </a>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Rekall Adventures. All rights reserved.</p>
+    </footer>
+</body>
+</html>

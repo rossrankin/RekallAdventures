@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowByte's Heist - Rekall Adventures</title>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        body { 
+            background: #0d0d0d; 
+            color: #00ffcc; 
+            font-family: 'Courier New', Courier, monospace; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
+        header { 
+            background: linear-gradient(90deg, #1a1a1a, #2a2a2a); 
+            padding: 15px 20px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 0 15px #ff007a; 
+        }
+        .logo { 
+            font-size: 1.8em; 
+            color: #ff007a; 
+            text-shadow: 0 0 10px #ff007a; 
+            margin-left: 20px; 
+            transition: transform 0.3s ease; 
+        }
+        .logo:hover { 
+            transform: scale(1.1); 
+            text-shadow: 0 0 20px #ff007a; 
+        }
+        nav ul { 
+            display: flex; 
+            justify-content: center; 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            flex: 1; 
+        }
+        nav ul li { margin: 0 20px; }
+        nav a { 
+            color: #00ffcc; 
+            text-decoration: none; 
+            font-size: 1.3em; 
+            text-shadow: 0 0 5px #00ffcc; 
+            transition: all 0.3s ease; 
+            padding: 5px 10px; 
+        }
+        nav a:hover { 
+            color: #ff007a; 
+            text-shadow: 0 0 15px #ff007a; 
+            transform: scale(1.1); 
+            background: rgba(255, 0, 122, 0.2); 
+            border-radius: 5px; 
+        }
+        main { 
+            flex: 1; 
+            padding-top: 80px; 
+            padding-bottom: 60px; 
+            display: flex; 
+            flex-direction: row; 
+            height: calc(100vh - 140px); 
+        }
+        .banner-container { 
+            width: 35%; /* Increased to 35% */
+            height: 100%; 
+            overflow: hidden; 
+            position: relative; 
+        }
+        .banner-image { 
+            width: 120%; 
+            height: 120%; 
+            object-fit: cover; 
+            display: block; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%) scale(1); /* Default scale */
+            transition: transform 0.3s ease; /* Smooth transition */
+        }
+        .content-container { 
+            width: 65%; /* Adjusted to 65% */
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .text-side { 
+            height: 70%; 
+            background: rgba(0, 0, 0, 0.7); 
+            padding: 20px 40px; /* Adjusted padding for better containment */
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center; 
+            scrollbar-width: thin; 
+            scrollbar-color: #00b7eb #1a1a1a; 
+        }
+        .text-side > * { 
+            text-align: left; 
+            width: 100%; 
+            max-width: 95%; /* Slightly increased to fit better */
+            opacity: 0; /* Start hidden for animation */
+            animation: glitchIn 0.8s ease forwards; /* New glitch animation */
+        }
+        .text-side h1 { animation-delay: 0.2s; } /* Staggered entry for h1 */
+        .text-side p { animation-delay: 0.4s; } /* Staggered entry for p */
+        .text-side::-webkit-scrollbar { 
+            width: 10px; 
+        }
+        .text-side::-webkit-scrollbar-track { 
+            background: #1a1a1a; 
+            border-radius: 5px; 
+        }
+        .text-side::-webkit-scrollbar-thumb { 
+            background: #00b7eb; 
+            border-radius: 5px; 
+        }
+        .text-side::-webkit-scrollbar-thumb:hover { 
+            background: #00eaff; 
+            box-shadow: 0 0 10px #00eaff, 0 0 15px #00b7eb; 
+        }
+        .choices-side { 
+            height: 30%; 
+            background: rgba(0, 0, 0, 0.7); 
+            padding: 20px 40px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        h1 { 
+            font-size: 2.5em; 
+            color: #ff007a; 
+            text-shadow: 0 0 15px #ff007a, 0 0 25px #00ffcc; 
+            position: relative; 
+            margin-bottom: 20px; 
+            padding-bottom: 5px; 
+        }
+        h1::after { 
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0; 
+            width: 50%; 
+            height: 3px;
+            background: linear-gradient(90deg, #ff007a, #00ffcc);
+            box-shadow: 0 0 10px #ff007a, 0 0 10px #00ffcc;
+            border-radius: 2px;
+        }
+        p { 
+            font-size: 1.2em; 
+            line-height: 1.4; 
+            text-shadow: 0 0 5px #00ffcc; 
+            margin: 0; 
+        }
+        /* New Glitch Animation */
+        @keyframes glitchIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px) skewX(10deg); 
+                filter: blur(2px); 
+            }
+            50% { 
+                opacity: 0.5; 
+                transform: translateY(0) skewX(-5deg); 
+                filter: blur(1px); 
+            }
+            75% { 
+                opacity: 0.8; 
+                transform: translateY(5px) skewX(2deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) skewX(0); 
+                filter: blur(0); 
+            }
+        }
+        button { 
+            background: #1a1a1a; 
+            color: #00ffcc; 
+            border: 3px solid #ff007a; 
+            padding: 12px 30px; 
+            font-size: 1.2em; 
+            width: 80%; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            text-shadow: 0 0 5px #00ffcc; 
+            box-shadow: 0 0 15px rgba(255, 0, 122, 0.5); 
+            border-radius: 8px; 
+            text-align: center; 
+        }
+        button:hover { 
+            background: #ff007a; 
+            color: #0d0d0d; 
+            box-shadow: 0 0 25px #ff007a, inset 0 0 10px #ff007a; 
+            text-shadow: none; 
+            transform: translateY(-2px); 
+        }
+        footer { 
+            background-color: #1a1a1a; 
+            padding: 20px; 
+            text-align: center; 
+            color: #00cc99; 
+            font-size: 0.9em; 
+            width: 100%; 
+        }
+        @media (max-width: 768px) {
+            header { flex-direction: column; align-items: flex-start; padding: 10px 15px; }
+            nav ul { flex-direction: column; width: 100%; align-items: center; }
+            nav ul li { margin: 10px 0; }
+            main { flex-direction: column; }
+            .banner-container { width: 100%; height: 25%; }
+            .content-container { width: 100%; height: 75%; }
+            .text-side { padding: 15px 20px; height: 60%; } /* Adjusted padding */
+            .choices-side { padding: 15px 20px; height: 40%; }
+            button { width: 90%; padding: 10px 20px; font-size: 1em; }
+            h1 { font-size: 2em; }
+            p { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Rekall Adventures</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">Stories</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="banner-container">
+            <img id="banner-image" class="banner-image" src="https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg" alt="Scene Banner">
+        </div>
+        <div class="content-container">
+            <div class="text-side">
+                <h1 id="title"></h1>
+                <p id="description"></p>
+            </div>
+            <div class="choices-side" id="choices"></div>
+        </div>
+    </main>
+    <footer>
+        <p>© 2025 Rekall Adventures. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const scenes = {
+                "intro": {
+                    title: "Welcome to ShadowByte's Heist",
+                    description: "You’re <strong>Alex</strong>, aka <strong>ShadowByte</strong>, a rogue hacker in <strong>NeoCity</strong>. Once an Omicron Corp coder, you uncovered their AI, 'Eclipse,' meant to control neural implants city-wide. You fled to the Undercity, trading a cushy life for a cramped apartment filled with scavenged tech and stale coffee. Now, you survive on risky gigs—cracking databases or pulling heists for shadowy clients. It’s a gamble, but it’s freedom—or a dirtier cage. Your deck hums, ready for the next job.",
+                    choices: [{ text: "Boot Up", nextScene: "scene1" }],
+                    background: "\profile.webp"
+                },
+                "scene1": {
+                    title: "The Job Offer",
+                    description: "Your terminal glows green in your cluttered Undercity pad, shadows dancing over circuit stacks. Tinkering with a drone motor, your deck pings—an encrypted message: <em>“ShadowByte, I’ve got a job: steal ‘Eclipse’ from Omicron’s facility. 500,000 credits. Y/N.”</em> Omicron’s fortress looms—drones, biometric locks, exosuit guards. The creds could free you from this slum, but failure means torture or death. Your deck hums—your call?",
+                    choices: [
+                        { text: "[A] Accept the Job", nextScene: "scene2A" },
+                        { text: "[B] Negotiate for More", nextScene: "scene2B" },
+                        { text: "[C] Say No Way", nextScene: "scene2C" },
+                        { text: "[D] Dig for More Info", nextScene: "scene2D" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene2A": {
+                    title: "Diving In",
+                    description: "You type <em>“Y”</em>—a data packet floods your screen with Omicron’s schematics: a glass tower, drones at the base, Eclipse in a 50th-floor vault behind lasers and locks. Entry’s a dock hatch, less guarded at 3 a.m. Your deck buzzes—gear up with a shaky cloak, jammer, fake ID, or loud cutter. The Undercity hums outside—how do you prep?",
+                    choices: [
+                        { text: "[A] Gather Intel from Mia", nextScene: "scene3A" },
+                        { text: "[B] Scout It Yourself", nextScene: "scene3B" },
+                        { text: "[C] Hack Their Systems", nextScene: "scene3C" },
+                        { text: "[D] Gear Up Solo", nextScene: "scene3D" },
+                        { text: "[E] Contact a Fence", nextScene: "scene3E" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene2B": {
+                    title: "Pushing for More",
+                    description: "You smirk, typing: <em>“750,000 or I’m out.”</em> Reply’s cold: <em>“Done. Don’t fail.”</em> Schematics flood in—a tower with drones, Eclipse in a 50th-floor vault, a service elevator shaft as your in. 750,000 creds tempt you, but failure’s a black-site cell. Deck hums—what’s your next step?",
+                    choices: [
+                        { text: "[A] Gather Intel from Mia", nextScene: "scene3A" },
+                        { text: "[B] Scout It Yourself", nextScene: "scene3B" },
+                        { text: "[C] Hack Their Systems", nextScene: "scene3C" },
+                        { text: "[D] Contact a Fence", nextScene: "scene3E" },
+                        { text: "[E] Prep an Escape Plan", nextScene: "scene3F" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene2C": {
+                    title: "Backing Off",
+                    description: "You type <em>“N”</em>—deck screeches, hacked: <em>“You’re in, or dead.”</em> Schematics force-download: a tower, Eclipse on the 50th, roof vent entry. Sparks fly, your apartment shrinks—500,000 creds forced on you. They’ve got you—how do you prep?",
+                    choices: [
+                        { text: "[A] Gather Intel from Mia", nextScene: "scene3A" },
+                        { text: "[B] Scout It Yourself", nextScene: "scene3B" },
+                        { text: "[C] Hack Their Systems", nextScene: "scene3C" },
+                        { text: "[D] Rig an Escape Plan", nextScene: "scene3F" },
+                        { text: "[E] Sabotage the Client", nextScene: "scene3G" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene2D": {
+                    title: "Digging Deeper",
+                    description: "You type: <em>“Who are you?”</em> Reply’s slow: <em>“Someone with a grudge. Eclipse is power. Fail, and you’re sold out. 500,000 creds—decide.”</em> Schematics hit—docks hatch, vault on the 50th. Suspicion bites—push or dive in?",
+                    choices: [
+                        { text: "[A] Accept Now", nextScene: "scene3H" },
+                        { text: "[B] Probe Further", nextScene: "scene3I" },
+                        { text: "[C] Ghost Them", nextScene: "scene3J" },
+                        { text: "[D] Hack the Client", nextScene: "scene3K" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene3A": {
+                    title: "Mia's Chop Shop",
+                    description: "You head to <strong>Mia</strong>’s chop shop in the Undercity’s grime, dodging stim hawkers and sirens. Inside, clang and torch hiss greet you—Mia, grease-streaked, grunts, “What’s up?” You spill the Omicron gig—Eclipse, 50th floor. She offers <strong>Jax</strong>, ex-Omicron, for 10,000 creds—shift patterns, backdoors. Worth it?",
+                    choices: [
+                        { text: "[A] Pay 10,000 Credits", nextScene: "scene4A1" },
+                        { text: "[B] Haggle Down", nextScene: "scene4A2" },
+                        { text: "[C] Walk Away", nextScene: "scene4A3" },
+                        { text: "[D] Threaten for Info", nextScene: "scene4A4" },
+                        { text: "[E] Bribe with Tech", nextScene: "scene4A5" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2021/02/17/08/54/cyberpunk-6023538_1280.jpg"
+                },
+                "scene3B": {
+                    title: "Scouting the Facility",
+                    description: "You cloak up—10 minutes of blur—and trek to the Corporate District through alleys, dodging patrols. Omicron’s tower gleams, drones hum, guards pace the docks. The hatch hides behind crates, but a drone’s close—cloak beeps low. Night ticks—your move?",
+                    choices: [
+                        { text: "[A] Time the Drone", nextScene: "scene4B1" },
+                        { text: "[B] Jam the Drone", nextScene: "scene4B2" },
+                        { text: "[C] Back Off", nextScene: "scene4B3" },
+                        { text: "[D] Distract Guards", nextScene: "scene4B4" },
+                        { text: "[E] Cut Through", nextScene: "scene4B5" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene3C": {
+                    title: "Hacking the Network",
+                    description: "You jack in—cyberspace glows, Omicron’s network a code fortress with ICE traps. You find a backdoor—cams, schedules, or vault codes tempt you, but your deck heats up fast. Rain hums outside—how far do you push?",
+                    choices: [
+                        { text: "[A] Disable Cameras", nextScene: "scene4C1" },
+                        { text: "[B] Grab Schedules", nextScene: "scene4C2" },
+                        { text: "[C] Push Deeper", nextScene: "scene4C3" },
+                        { text: "[D] Bail Out", nextScene: "scene4C4" },
+                        { text: "[E] Spoof a Signal", nextScene: "scene4C5" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene3D": {
+                    title: "Gearing Up Solo",
+                    description: "You trust your kit—cloak (10 minutes), shaky jammer, stolen ID chip, loud cutter. You test them: cloak flickers, jammer spits, ID glows, cutter hums blue. Deck’s loaded with basic scripts—1 a.m., two hours to shift change. How do you roll?",
+                    choices: [
+                        { text: "[A] Hit the Docks", nextScene: "scene4D1" },
+                        { text: "[B] Try the Roof", nextScene: "scene4D2" },
+                        { text: "[C] Test Gear", nextScene: "scene4D3" },
+                        { text: "[D] Rig a Backup", nextScene: "scene4D4" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "scene3E": {
+                    title: "Fencing for Info",
+                    description: "You hit <strong>Zora</strong>’s den at Neon Static—smoke and liquor sting the air. She smirks, “Omicron heist? Eclipse is grid control—15,000 creds for routes and blinds, million split 60-40 if you deliver.” Cyber-fingers tap—deal?",
+                    choices: [
+                        { text: "[A] Pay 15,000", nextScene: "scene4E1" },
+                        { text: "[B] Counteroffer", nextScene: "scene4E2" },
+                        { text: "[C] Decline", nextScene: "scene4E3" },
+                        { text: "[D] Steal Her Data", nextScene: "scene4E4" }
+                    ],
+                    background: "https://unsplash.com/photos/5fNmWej4tAA/download?force=true"
+                },
+                "scene3F": {
+                    title: "Rigging an Escape",
+                    description: "You rig an out—burner comms, fake ID, 5,000 creds. Options: damp dock tunnels, Jax’s skiff, or Miko’s grid glitch. Deck spoofs your signal—client’s data waits, a bomb unopened. Rain drums—how do you use this?",
+                    choices: [
+                        { text: "[A] Prep Tunnels", nextScene: "scene4F1" },
+                        { text: "[B] Secure Skiff", nextScene: "scene4F2" },
+                        { text: "[C] Glitch Grid", nextScene: "scene4F3" },
+                        { text: "[D] Take the Job", nextScene: "scene4F4" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene3G": {
+                    title: "Sabotaging the Client",
+                    description: "You spoof <em>“Y”</em>, tracing their signal—Undercity tower, five klicks off. Fry them, buy time—deck heats, but it’s doable. Schematics stay—use them or burn the bridge?",
+                    choices: [
+                        { text: "[A] Fry Their System", nextScene: "scene4G1" },
+                        { text: "[B] Take the Job", nextScene: "scene4G2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene3H": {
+                    title: "Accepting Late",
+                    description: "You type <em>“Y”</em>—<em>“Smart move,”</em> they reply, sending schematics: docks hatch, 50th-floor vault, 500,000 creds on the line. Deck groans, 3 a.m. shift nears—how do you dive in?",
+                    choices: [
+                        { text: "[A] Gather Intel from Mia", nextScene: "scene3A" },
+                        { text: "[B] Scout It Yourself", nextScene: "scene3B" },
+                        { text: "[C] Hack Their Systems", nextScene: "scene3C" },
+                        { text: "[D] Gear Up Solo", nextScene: "scene3D" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene3I": {
+                    title: "Probing Further",
+                    description: "You push: <em>“Who? Why?”</em> Reply’s icy: <em>“Creds, not names. Eclipse is leverage—fail, and Synthara gets you.”</em> Schematics drop—docks, vault. Deck hums—accept or ghost?",
+                    choices: [
+                        { text: "[A] Accept Now", nextScene: "scene3H" },
+                        { text: "[B] Ghost Them", nextScene: "scene3J" },
+                        { text: "[C] Hack the Client", nextScene: "scene3K" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene3J": {
+                    title: "Ghosting the Client",
+                    description: "You cut the link, spoofing your grid—deck goes dark, then buzzes: <em>“You’re in—run, we’ll hunt.”</em> Schematics force through—docks, vault. They’ve hacked you—how do you proceed?",
+                    choices: [
+                        { text: "[A] Gather Intel from Mia", nextScene: "scene3A" },
+                        { text: "[B] Scout It Yourself", nextScene: "scene3B" },
+                        { text: "[C] Hack Their Systems", nextScene: "scene3C" },
+                        { text: "[D] Rig an Escape", nextScene: "scene3F" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene3K": {
+                    title: "Hacking the Client",
+                    description: "You trace them—tower five klicks off—but ICE hits, deck sparking. You pull out, schematics intact—burned but alive. Rain taps—accept or ghost?",
+                    choices: [
+                        { text: "[A] Accept the Job", nextScene: "scene3H" },
+                        { text: "[B] Ghost Them", nextScene: "scene3J" },
+                        { text: "[C] Use Schematics", nextScene: "scene4H1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene4A1": {
+                    title: "Paying Mia",
+                    description: "You send 10,000 creds—balance drops to 4,000. Mia grins, dragging <strong>Jax</strong> out—twitchy, he mutters: “3 a.m. docks, five-minute gap; roof vent’s lasers gap ten seconds. Vault’s AI alarm’s silent.” You pocket his chip—3 a.m. nears. How do you hit it?",
+                    choices: [
+                        { text: "[A] Dock Window", nextScene: "scene5A1" },
+                        { text: "[B] Roof Vent", nextScene: "scene5A2" },
+                        { text: "[C] Sabotage Drones", nextScene: "scene5A3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2021/02/17/08/54/cyberpunk-6023538_1280.jpg"
+                },
+                "scene4A2": {
+                    title: "Haggling with Mia",
+                    description: "You haggle: “5,000, Mia.” She snorts, “8,000 or walk.” 14,000 creds left—8,000 leaves you thin. Her eyes harden—deal or ditch?",
+                    choices: [
+                        { text: "[A] Pay 8,000", nextScene: "scene5B1" },
+                        { text: "[B] Walk Away", nextScene: "scene5B2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2021/02/17/08/54/cyberpunk-6023538_1280.jpg"
+                },
+                "scene4A3": {
+                    title: "Walking Away",
+                    description: "You back off—“Later, Mia.” She shrugs, “Your funeral.” Rain hits as you leave—no intel, just schematics. 3 a.m. looms—how do you tackle it?",
+                    choices: [
+                        { text: "[A] Scout It", nextScene: "scene3B" },
+                        { text: "[B] Hack Systems", nextScene: "scene3C" },
+                        { text: "[C] Gear Up Solo", nextScene: "scene3D" }
+                    ],
+                    background: "https://unsplash.com/photos/Kw_zQBAK6NY/download?force=true"
+                },
+                "scene4A4": {
+                    title: "Threatening Mia",
+                    description: "You growl, “Talk, or your rep’s ash.” Mia’s eyes flash— “Jax talks, you’re out.” He rasps: “3 a.m. docks, roof vent gaps—vault alarm’s silent.” Bridge burned—how do you hit it?",
+                    choices: [
+                        { text: "[A] Dock Window", nextScene: "scene5A1" },
+                        { text: "[B] Roof Vent", nextScene: "scene5A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2021/02/17/08/54/cyberpunk-6023538_1280.jpg"
+                },
+                "scene4A5": {
+                    title: "Bribing with Tech",
+                    description: "You slide a drone core—“12,000’s worth.” Mia grins, “Deal.” Jax mutters: “3 a.m. docks, roof vent gaps—vault alarm’s fast.” Creds intact—how do you strike?",
+                    choices: [
+                        { text: "[A] Dock Window", nextScene: "scene5A1" },
+                        { text: "[B] Roof Vent", nextScene: "scene5A2" },
+                        { text: "[C] Sabotage Drones", nextScene: "scene5A3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2021/02/17/08/54/cyberpunk-6023538_1280.jpg"
+                },
+                "scene4B1": {
+                    title: "Timing the Drone",
+                    description: "You clock the drone—five-second gap, cloak at 5%. You dart, hatch squeals, dropping into a steamy corridor—drones ahead, elevator 100 meters off. Cloak’s at 3%, boots echo—sneak or push?",
+                    choices: [
+                        { text: "[A] Sneak Past", nextScene: "scene5C1" },
+                        { text: "[B] Jam Drones", nextScene: "scene5C2" },
+                        { text: "[C] Cut Shortcut", nextScene: "scene5C3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene4B2": {
+                    title: "Jamming the Drone",
+                    description: "Jammer flares—drone’s blind, cloak at 6%. Hatch opens, you drop in—corridor steams, jammer shorts. Drones close, elevator 100 meters off—boots near. Sneak or cut?",
+                    choices: [
+                        { text: "[A] Sneak Past", nextScene: "scene5C1" },
+                        { text: "[B] Use Cutter", nextScene: "scene5C3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene4B3": {
+                    title: "Backing Off",
+                    description: "You retreat—cloak at 4%, drone too close. Rain hides you as you slip back, Omicron taunting in the skyline—no intel gained. 3 a.m. nears—next move?",
+                    choices: [
+                        { text: "[A] Gather Intel", nextScene: "scene3A" },
+                        { text: "[B] Hack Systems", nextScene: "scene3C" },
+                        { text: "[C] Gear Up", nextScene: "scene3D" }
+                    ],
+                    background: "https://unsplash.com/photos/Kw_zQBAK6NY/download?force=true"
+                },
+                "scene4B4": {
+                    title: "Distracting Guards",
+                    description: "You toss a noise-maker—guards turn, cloak at 8%. Hatch opens, you drop in—corridor’s humid, drones hum, elevator 100 meters off. Cloak’s at 6%—sneak or jam?",
+                    choices: [
+                        { text: "[A] Sneak Past", nextScene: "scene5C1" },
+                        { text: "[B] Jam Drones", nextScene: "scene5C2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene4B5": {
+                    title: "Cutting Through",
+                    description: "Cutter roars—panel melts, noise draws drones and guards. You dive in—shaft’s hot, cloak at 5%, elevator 80 meters off. Tasers zap—fight or run?",
+                    choices: [
+                        { text: "[A] Fight Drones", nextScene: "scene5D1" },
+                        { text: "[B] Run to Elevator", nextScene: "scene5D2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene4C1": {
+                    title: "Camera Blackout",
+                    description: "You kill dock cams—ten-minute blind spot, deck hot. Jack out—rain taps, schematics glow. Docks are open—how do you use this window?",
+                    choices: [
+                        { text: "[A] Hit Docks", nextScene: "scene5E1" },
+                        { text: "[B] Scout", nextScene: "scene5E2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene4C2": {
+                    title: "Shift Schedules",
+                    description: "You snag schedules—3 a.m. dock gap, 2 a.m. roof quiet. Deck overheats, you jack out—rain hums, 2 a.m. nears. Pick your shot?",
+                    choices: [
+                        { text: "[A] Dock", nextScene: "scene5F1" },
+                        { text: "[B] Roof", nextScene: "scene5F2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene4C3": {
+                    title: "Deep Dive",
+                    description: "You push—‘X7K9’ fragment snagged, but ICE trips, deck sparks. You jack out—rain falls, they’ve got your ping. Move or hide?",
+                    choices: [
+                        { text: "[A] Hit Docks", nextScene: "scene5G1" },
+                        { text: "[B] Hit Roof", nextScene: "scene5G2" },
+                        { text: "[C] Hide", nextScene: "scene5G3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene4C4": {
+                    title: "Bailing Out",
+                    description: "You pull back—ICE too hot, deck safe but empty. Rain drums, schematics taunt—3 a.m. ticks closer. Solo or scout?",
+                    choices: [
+                        { text: "[A] Scout", nextScene: "scene3B" },
+                        { text: "[B] Gear Up", nextScene: "scene3D" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "scene4C5": {
+                    title: "Spoofing a Signal",
+                    description: "You spoof—cams loop for 15 minutes, deck cools. Rain taps—docks glow on your screen. Hit it or scout?",
+                    choices: [
+                        { text: "[A] Hit Docks", nextScene: "scene5H1" },
+                        { text: "[B] Scout", nextScene: "scene5H2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene4D1": {
+                    title: "Dock Solo",
+                    description: "You hit the docks at 2:45 a.m., cloak at 7%—hatch opens, you drop into a steamy corridor, drones humming. Elevator’s 100 meters off, cloak at 5%—sneak or jam?",
+                    choices: [
+                        { text: "[A] Sneak Past", nextScene: "scene5C1" },
+                        { text: "[B] Jam Drones", nextScene: "scene5C2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene4D2": {
+                    title: "Roof Solo",
+                    description: "You climb 50 stories—cloak at 6%, vent opens, you drop to a shaft. Elevator’s 20 meters down, drones buzz—cloak at 4%. Move or cut?",
+                    choices: [
+                        { text: "[A] Use Elevator", nextScene: "scene5I1" },
+                        { text: "[B] Cut Through", nextScene: "scene5I2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene4D3": {
+                    title: "Gear Test",
+                    description: "You test—cloak flickers, jammer shorts, ID scans, cutter hums. 2 a.m., rain taps—schematics glow. Docks or roof?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene4D1" },
+                        { text: "[B] Roof", nextScene: "scene4D2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "scene4D4": {
+                    title: "Rigging Backup",
+                    description: "You set a dead-man’s ping—12 hours, docks comms. Kit’s ready—cloak, jammer, ID, cutter. 2 a.m., rain falls—docks or roof?",
+                    choices: [
+                        { text: "[A] Hit Docks", nextScene: "scene5J1" },
+                        { text: "[B] Hit Roof", nextScene: "scene5J2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "scene4E1": {
+                    title: "Paying Zora",
+                    description: "You pay 15,000—balance zero. Zora grins, “3 a.m. docks, east vent blind—million creds, 60-40.” Rain falls—hit it how?",
+                    choices: [
+                        { text: "[A] Dock Entry", nextScene: "scene5K1" },
+                        { text: "[B] East Vent", nextScene: "scene5K2" }
+                    ],
+                    background: "https://unsplash.com/photos/5fNmWej4tAA/download?force=true"
+                },
+                "scene4E2": {
+                    title: "Countering Zora",
+                    description: "You counter, “10,000.” She snaps, “12,000 or bust.” 14,000 left—deal or ditch?",
+                    choices: [
+                        { text: "[A] Pay 12,000", nextScene: "scene5L1" },
+                        { text: "[B] Ditch Her", nextScene: "scene5L2" }
+                    ],
+                    background: "https://unsplash.com/photos/5fNmWej4tAA/download?force=true"
+                },
+                "scene4E3": {
+                    title: "Declining Zora",
+                    description: "You decline—“Too steep.” Zora shrugs, “Your loss.” Rain hits—no buyer, just schematics. 3 a.m. nears—how now?",
+                    choices: [
+                        { text: "[A] Scout", nextScene: "scene3B" },
+                        { text: "[B] Hack", nextScene: "scene3C" }
+                    ],
+                    background: "https://unsplash.com/photos/Kw_zQBAK6NY/download?force=true"
+                },
+                "scene4E4": {
+                    title: "Stealing from Zora",
+                    description: "You swipe Zora’s comms—routes spill: 3 a.m. docks, east vent. She lunges, you bolt—rain hides you, but she’s pissed. How do you use it?",
+                    choices: [
+                        { text: "[A] Dock Entry", nextScene: "scene5M1" },
+                        { text: "[B] East Vent", nextScene: "scene5M2" }
+                    ],
+                    background: "https://unsplash.com/photos/5fNmWej4tAA/download?force=true"
+                },
+                "scene4F1": {
+                    title: "Tunnels Backup",
+                    description: "You rig tunnels—burner comms, 5,000 creds stashed. Schematics glow—docks or roof, escape set. Rain falls—2 a.m. How do you hit it?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5N1" },
+                        { text: "[B] Roof", nextScene: "scene5N2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene4F2": {
+                    title: "Skiff Backup",
+                    description: "You secure Jax’s skiff—5,000 creds aboard. Schematics taunt—docks or roof, escape ready. Rain lashes—2 a.m. Strike how?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5O1" },
+                        { text: "[B] Roof", nextScene: "scene5O2" }
+                    ],
+                    background: "https://unsplash.com/photos/5fNmWej4tAA/download?force=true"
+                },
+                "scene4F3": {
+                    title: "Grid Glitch",
+                    description: "You glitch your grid—24-hour mask, 5,000 creds stashed. Schematics glow—docks or roof, ghosted. Rain hums—2 a.m. How do you move?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5P1" },
+                        { text: "[B] Roof", nextScene: "scene5P2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene4F4": {
+                    title: "Taking the Job",
+                    description: "You dive in—docks, roof, vault on the 50th, escape set with comms, ID, 5,000 creds. 2 a.m., rain falls—how do you hit it?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5A1" },
+                        { text: "[B] Roof", nextScene: "scene5A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene4G1": {
+                    title: "Frying the Client",
+                    description: "You fry them—deck sparks, their tower goes dark. Schematics stay—no threats, just Omicron. Rain taps—solo now, how do you hit it?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5Q1" },
+                        { text: "[B] Roof", nextScene: "scene5Q2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/03/18/20/56/cyberpunk-4945138_1280.jpg"
+                },
+                "scene4G2": {
+                    title: "Taking the Job",
+                    description: "You drop the hack—schematics glow: docks, roof, vault. Client’s threat lingers—500,000 creds ahead. 2 a.m., rain falls—how do you dive in?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5A1" },
+                        { text: "[B] Roof", nextScene: "scene5A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene4H1": {
+                    title: "Using Schematics",
+                    description: "You stick to schematics—docks or roof, client’s shadow looms. 2 a.m., rain pounds—500,000 creds tempt. How do you strike?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5A1" },
+                        { text: "[B] Roof", nextScene: "scene5A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2017/08/07/22/57/cyberpunk-2605703_1280.jpg"
+                },
+                "scene5A1": {
+                    title: "Dock Window",
+                    description: "You hit the docks at 3 a.m., cloak at 7%—guards swap, drones recalibrate. Hatch opens, you drop in—corridor steams, elevator 100 meters off. Cloak’s at 5%, boots echo—sneak or push?",
+                    choices: [
+                        { text: "[A] Sneak Past", nextScene: "scene6A1" },
+                        { text: "[B] Disable Drones", nextScene: "scene6A2" },
+                        { text: "[C] Cut Shortcut", nextScene: "scene6A3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5A2": {
+                    title: "Roof Vent",
+                    description: "You climb at 2:55 a.m., cloak at 6%—vent’s open, lasers off for ten seconds. You drop in—shaft’s tight, elevator 20 meters down. Cloak’s at 4%—move or cut?",
+                    choices: [
+                        { text: "[A] Use Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut Through", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5A3": {
+                    title: "Sabotaging Drones",
+                    description: "You jam drones at 2:50 a.m.—three crash, chaos buys time. Hatch opens, you drop in—corridor’s hot, drones hum inside, elevator 100 meters off. Guards stir—sneak or cut?",
+                    choices: [
+                        { text: "[A] Sneak Past", nextScene: "scene6A1" },
+                        { text: "[B] Cut Shortcut", nextScene: "scene6A3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5B1": {
+                    title: "Paying 8,000",
+                    description: "You pay 8,000—6,000 left. Jax rasps: “3 a.m. docks, roof vent gaps—vault alarm’s silent.” Mia grins—2 a.m., rain falls. How do you hit it?",
+                    choices: [
+                        { text: "[A] Dock Window", nextScene: "scene5A1" },
+                        { text: "[B] Roof Vent", nextScene: "scene5A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2021/02/17/08/54/cyberpunk-6023538_1280.jpg"
+                },
+                "scene5B2": {
+                    title: "Walking from Mia",
+                    description: "You leave—14,000 creds, no intel. Rain soaks you—schematics glow, 2 a.m., 3 a.m. shift nears. Solo strike?",
+                    choices: [
+                        { text: "[A] Scout", nextScene: "scene3B" },
+                        { text: "[B] Hack", nextScene: "scene3C" }
+                    ],
+                    background: "https://unsplash.com/photos/Kw_zQBAK6NY/download?force=true"
+                },
+                "scene5C1": {
+                    title: "Sneaking Past",
+                    description: "You sneak—cloak dies, drones miss you. ID scans, elevator opens—50th floor, blue halls, vault 50 meters off, two guards pace. No cloak—close in how?",
+                    choices: [
+                        { text: "[A] Distract Guards", nextScene: "scene6C1" },
+                        { text: "[B] Fight Guards", nextScene: "scene6C2" },
+                        { text: "[C] Cut Quietly", nextScene: "scene6C3" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene5C2": {
+                    title: "Jamming Drones",
+                    description: "Jammer flares—drones crash, guards close. ID scans, elevator hits 50th—vault 50 meters, guards alert, cloak at 1%. How do you finish?",
+                    choices: [
+                        { text: "[A] Distract Guards", nextScene: "scene6C1" },
+                        { text: "[B] Fight Guards", nextScene: "scene6C2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene5C3": {
+                    title: "Cutting Shortcut",
+                    description: "Cutter slices—sparks fly, you crawl into a shaft, drones swarm. Elevator’s 20 meters up, cloak dead—climb or fight?",
+                    choices: [
+                        { text: "[A] Climb Up", nextScene: "scene6D1" },
+                        { text: "[B] Fight Back", nextScene: "scene6D2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5D1": {
+                    title: "Fighting Drones",
+                    description: "You cut a drone—sparks, but a taser hits, arm numb. Guards storm in, rifles up—vault’s 80 meters, cloak dead. Surrender or swing?",
+                    choices: [
+                        { text: "[A] Surrender", nextScene: "scene6E1" },
+                        { text: "[B] Fight On", nextScene: "scene6E2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5D2": {
+                    title: "Running to Elevator",
+                    description: "You bolt—tasers graze, ID scans, elevator hits 50th—blue halls, vault 50 meters, guards turn. Cutter’s loud—distract or fight?",
+                    choices: [
+                        { text: "[A] Distract Guards", nextScene: "scene6C1" },
+                        { text: "[B] Fight Guards", nextScene: "scene6C2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene5E1": {
+                    title: "Dock Blind Spot",
+                    description: "You hit docks at 2:50 a.m.—cams dark, cloak at 7%, hatch opens. Corridor steams, drones hum, elevator 100 meters—ten minutes left. Sneak or push?",
+                    choices: [
+                        { text: "[A] Sneak Past", nextScene: "scene6A1" },
+                        { text: "[B] Disable Drones", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5E2": {
+                    title: "Scout with Cover",
+                    description: "Cams off—cloak at 6%, guards distracted, hatch clear. Drones hum—eight minutes left. Enter or wait?",
+                    choices: [
+                        { text: "[A] Enter Now", nextScene: "scene5E1" },
+                        { text: "[B] Wait for Shift", nextScene: "scene5F1" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5F1": {
+                    title: "Dock Shift",
+                    description: "3 a.m.—guards swap, drones quiet, cloak at 5%. Hatch opens, corridor foggy—elevator 100 meters. Five-minute gap—sneak or cut?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Cut Path", nextScene: "scene6A3" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5F2": {
+                    title: "Roof Shift",
+                    description: "2 a.m.—roof quiet, cloak at 6%, lasers off. Vent opens, shaft drops—elevator 20 meters, cloak at 4%. Move or cut?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut Through", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5G1": {
+                    title: "Dock Alert",
+                    description: "2:55 a.m.—cloak at 5%, alert’s live, drones swarm. Hatch opens, corridor chaotic—elevator 100 meters, ‘X7K9’ your edge. Run or fight?",
+                    choices: [
+                        { text: "[A] Run", nextScene: "scene6F1" },
+                        { text: "[B] Fight", nextScene: "scene6F2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5G2": {
+                    title: "Roof Alert",
+                    description: "2:55 a.m.—cloak at 5%, alert trips, lasers graze you. Vent drops to shaft—elevator 20 meters, cloak fading. Move or cut?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5G3": {
+                    title: "Hiding First",
+                    description: "You hide in a tunnel—alert fades, client pings: <em>“Move.”</em> ‘X7K9’ glows—2:30 a.m., rain seeps. Docks or roof?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5A1" },
+                        { text: "[B] Roof", nextScene: "scene5A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5H1": {
+                    title: "Dock Spoof",
+                    description: "2:45 a.m.—cams loop, cloak at 6%, hatch opens. Corridor steams, drones hum—elevator 100 meters, 12 minutes left. Sneak or push?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Disable", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5H2": {
+                    title: "Scout Spoof",
+                    description: "2:40 a.m.—spoof holds, cloak at 5%, hatch clear. Drones off—13 minutes left. Enter or wait?",
+                    choices: [
+                        { text: "[A] Enter", nextScene: "scene5H1" },
+                        { text: "[B] Wait", nextScene: "scene5F1" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5I1": {
+                    title: "Elevator Drop",
+                    description: "ID scans—elevator drops to 50th, blue halls pulse. Vault’s 50 meters, two guards pace—cloak’s dead. How do you close?",
+                    choices: [
+                        { text: "[A] Distract", nextScene: "scene6C1" },
+                        { text: "[B] Fight", nextScene: "scene6C2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene5I2": {
+                    title: "Cutting Down",
+                    description: "Cutter roars—drop to 50th, guards spin, cloak dead. Vault’s 50 meters—fight or run?",
+                    choices: [
+                        { text: "[A] Fight", nextScene: "scene6C2" },
+                        { text: "[B] Run", nextScene: "scene6D1" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene5J1": {
+                    title: "Dock Backup",
+                    description: "2:50 a.m.—cloak at 6%, backup set, hatch opens. Corridor steams, elevator 100 meters—sneak?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Jam", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5J2": {
+                    title: "Roof Backup",
+                    description: "2:50 a.m.—cloak at 5%, backup set, vent opens. Elevator 20 meters—cloak at 3%. Move?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5K1": {
+                    title: "Dock Deal",
+                    description: "3 a.m.—cloak at 6%, Zora’s routes hold, hatch opens. Corridor hot, elevator 100 meters—million creds split ahead. Sneak?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Disable", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5K2": {
+                    title: "East Vent",
+                    description: "2:55 a.m.—cloak at 5%, Zora’s blind holds, vent opens. Shaft tight, elevator 20 meters—cloak at 3%. Move?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5L1": {
+                    title: "Zora’s Cut",
+                    description: "12,000 paid—Zora gives: “3 a.m. docks, east vent.” 2,000 left—rain falls. How do you strike?",
+                    choices: [
+                        { text: "[A] Docks", nextScene: "scene5K1" },
+                        { text: "[B] Vent", nextScene: "scene5K2" }
+                    ],
+                    background: "https://unsplash.com/photos/5fNmWej4tAA/download?force=true"
+                },
+                "scene5L2": {
+                    title: "Ditching Zora",
+                    description: "You ditch—14,000 creds, no intel. Rain drenches—2 a.m., schematics glow. How now?",
+                    choices: [
+                        { text: "[A] Scout", nextScene: "scene3B" },
+                        { text: "[B] Hack", nextScene: "scene3C" }
+                    ],
+                    background: "https://unsplash.com/photos/Kw_zQBAK6NY/download?force=true"
+                },
+                "scene5M1": {
+                    title: "Dock Stolen",
+                    description: "3 a.m.—cloak at 5%, Zora’s routes, hatch opens. Corridor steams, elevator 100 meters—mercs may chase. Sneak?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Disable", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5M2": {
+                    title: "Vent Stolen",
+                    description: "2:55 a.m.—cloak at 4%, Zora’s blind, vent opens. Shaft tight, elevator 20 meters—cloak at 2%. Move?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5N1": {
+                    title: "Dock Tunnels",
+                    description: "2:55 a.m.—cloak at 6%, tunnels set, hatch opens. Corridor hot, elevator 100 meters—sneak?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Jam", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5N2": {
+                    title: "Roof Tunnels",
+                    description: "2:55 a.m.—cloak at 5%, tunnels below, vent opens. Elevator 20 meters—cloak at 3%. Move?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5O1": {
+                    title: "Dock Skiff",
+                    description: "2:55 a.m.—cloak at 6%, skiff set, hatch opens. Corridor steams, elevator 100 meters—sneak?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Jam", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5O2": {
+                    title: "Roof Skiff",
+                    description: "2:55 a.m.—cloak at 5%, skiff below, vent opens. Elevator 20 meters—cloak at 3%. Move?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5P1": {
+                    title: "Dock Glitch",
+                    description: "2:55 a.m.—cloak at 6%, grid glitched, hatch opens. Corridor hot, elevator 100 meters—sneak?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Jam", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5P2": {
+                    title: "Roof Glitch",
+                    description: "2:55 a.m.—cloak at 5%, grid glitched, vent opens. Elevator 20 meters—cloak at 3%. Move?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene5Q1": {
+                    title: "Dock Solo",
+                    description: "2:55 a.m.—cloak at 6%, client fried, hatch opens. Corridor steams, elevator 100 meters—no leash. Sneak?",
+                    choices: [
+                        { text: "[A] Sneak", nextScene: "scene6A1" },
+                        { text: "[B] Jam", nextScene: "scene6A2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene5Q2": {
+                    title: "Roof Solo",
+                    description: "2:55 a.m.—cloak at 5%, client gone, vent opens. Elevator 20 meters—cloak at 3%. Move?",
+                    choices: [
+                        { text: "[A] Elevator", nextScene: "scene6B1" },
+                        { text: "[B] Cut", nextScene: "scene6B2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene6A1": {
+                    title: "Sneaking Past",
+                    description: "Cloak dies, drones miss—ID scans, 50th floor opens. Blue halls, vault 50 meters, two guards pace—no cloak, alarm looms. How do you close?",
+                    choices: [
+                        { text: "[A] Distract", nextScene: "scene7A1" },
+                        { text: "[B] Fight", nextScene: "scene7A2" },
+                        { text: "[C] Cut Lock", nextScene: "scene7A3" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6A2": {
+                    title: "Disabling Drones",
+                    description: "Jammer crashes drones—guards hear, close in. ID scans, 50th floor—vault 50 meters, guards alert, cloak at 1%. Finish how?",
+                    choices: [
+                        { text: "[A] Distract", nextScene: "scene7A1" },
+                        { text: "[B] Fight", nextScene: "scene7A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6A3": {
+                    title: "Cutting Shortcut",
+                    description: "Cutter sparks—you crawl into a shaft, drones swarm. Elevator 20 meters up, cloak dead—climb or fight?",
+                    choices: [
+                        { text: "[A] Climb", nextScene: "scene7B1" },
+                        { text: "[B] Fight", nextScene: "scene7B2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene6B1": {
+                    title: "Elevator Ride",
+                    description: "ID hums—elevator drops to 50th, blue halls pulse. Vault 50 meters, guards pace—cloak’s gone. Approach how?",
+                    choices: [
+                        { text: "[A] Distract", nextScene: "scene7A1" },
+                        { text: "[B] Fight", nextScene: "scene7A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6B2": {
+                    title: "Cutting Path",
+                    description: "Cutter drops you to 50th—guards spin, cloak dead. Vault 50 meters—fight or run?",
+                    choices: [
+                        { text: "[A] Fight", nextScene: "scene7A2" },
+                        { text: "[B] Run", nextScene: "scene7B1" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6C1": {
+                    title: "Distracting Guards",
+                    description: "Bolt clangs—guards turn, you slip to vault, 20 meters. Scanner’s red, lasers hum—cutter’s loud, ‘X7K9’ partial. Crack it?",
+                    choices: [
+                        { text: "[A] Cut", nextScene: "scene7C1" },
+                        { text: "[B] Spoof", nextScene: "scene7C2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6C2": {
+                    title: "Fighting Guards",
+                    description: "Cutter hits—one guard sparks, other slams you, vision blurs. Vault 20 meters—cutter drops, guards close. Fight or fold?",
+                    choices: [
+                        { text: "[A] Fight", nextScene: "scene7D1" },
+                        { text: "[B] Surrender", nextScene: "scene7D2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6C3": {
+                    title: "Cutting Quietly",
+                    description: "Cutter hums low—panel opens, you crawl to vault, 10 meters. Scanner red, lasers faint—no cloak, ‘X7K9’ partial. Crack or bust?",
+                    choices: [
+                        { text: "[A] Cut Vault", nextScene: "scene7C1" },
+                        { text: "[B] Spoof ‘X7K9’", nextScene: "scene7C2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6D1": {
+                    title: "Climbing Up",
+                    description: "You climb—ID scans, 50th floor opens, blue halls pulse. Vault 50 meters, guards below—no cloak. Close how?",
+                    choices: [
+                        { text: "[A] Distract", nextScene: "scene7A1" },
+                        { text: "[B] Fight", nextScene: "scene7A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6D2": {
+                    title: "Fighting Back",
+                    description: "Cutter sparks a drone—guards fire, you bleed. Vault 50 meters—no cloak, pinned. Surrender or die?",
+                    choices: [
+                        { text: "[A] Surrender", nextScene: "scene7E1" },
+                        { text: "[B] Fight", nextScene: "scene7E2" }
+                    ],
+                    background: "https://unsplash.com/photos/8vDepthi8nI/download?force=true"
+                },
+                "scene6E1": {
+                    title: "Surrendering",
+                    description: "You drop—guards cuff you, vault 50 meters off. Omicron drags you away—game over?",
+                    choices: [
+                        { text: "[A] Accept", nextScene: "endA" },
+                        { text: "[B] Escape", nextScene: "scene7F1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene6E2": {
+                    title: "Fighting On",
+                    description: "You swing the cutter wildly—a bullet tears into your shoulder, dropping you hard as blood spills onto the cold floor. The vault’s 80 meters away, a distant gleam taunting you through the pain. Guards swarm in, exosuits clanking, rifles trained—your cutter’s too heavy now, cloak long dead. This could be your last stand—do you push through the agony or give in?",
+                    choices: [
+                        { text: "[A] Fight", nextScene: "endB" },
+                        { text: "[B] Surrender", nextScene: "scene6E1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene6F1": {
+                    title: "Running to Elevator",
+                    description: "You limp through the chaos, drones buzzing and tasers crackling behind you—your shaky ID chip scans, and the elevator doors slide open to the 50th floor. Sterile blue halls stretch out, the vault 50 meters away, its titanium sheen glinting under flickering lights. Two guards spin toward the noise, rifles up—no cloak, just ‘X7K9’ as a partial edge. How do you finish this?",
+                    choices: [
+                        { text: "[A] Distract", nextScene: "scene7A1" },
+                        { text: "[B] Fight", nextScene: "scene7A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene6F2": {
+                    title: "Fighting Drones",
+                    description: "You swing the cutter—a drone sparks and crashes in a shower of metal, but guards burst in, rifles blazing. A bullet rips through your leg, dropping you to one knee as pain sears. The vault’s 100 meters down the corridor, unreachable now—no cloak, ‘X7K9’ useless in your hand. Pinned and bleeding—surrender or go down fighting?",
+                    choices: [
+                        { text: "[A] Surrender", nextScene: "scene6E1" },
+                        { text: "[B] Fight", nextScene: "endB" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene7A1": {
+                    title: "Distracting Guards",
+                    description: "You lob a loose panel—it clangs down the hall, echoing sharply, and the guards turn, rifles swinging away from you. You slip forward, closing to 20 meters from the vault—its titanium surface gleams, the retinal scanner blinking red, lasers humming faintly in reserve. No cloak, cutter’s loud as hell, and ‘X7K9’ is only a fragment—guards’ll pivot back soon. How do you crack it?",
+                    choices: [
+                        { text: "[A] Cut", nextScene: "scene8A1" },
+                        { text: "[B] Spoof", nextScene: "scene8A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene7A2": {
+                    title: "Fighting Guards",
+                    description: "You charge with the cutter—its blue flame slices into one guard’s exosuit, sparks flying as he stumbles, but the other slams you with a rifle butt, cracking your ribs. The vault’s 20 meters off, scanner glowing red—your cutter clatters away, guards closing in fast. Do you keep fighting through the pain or give up?",
+                    choices: [
+                        { text: "[A] Fight", nextScene: "scene8B1" },
+                        { text: "[B] Surrender", nextScene: "scene8B2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene7A3": {
+                    title: "Cutting Lock",
+                    description: "You thumb the cutter’s switch—its roar fills the hall as it slices into the vault’s edge, alarms screaming instantly. Guards spin, rifles spitting fire, and lasers snap on, grazing your arm with searing heat. The vault cracks open a sliver—Eclipse glints inside. Finish the cut or bolt before they close in?",
+                    choices: [
+                        { text: "[A] Grab Eclipse", nextScene: "scene8C1" },
+                        { text: "[B] Run", nextScene: "scene8C2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene7B1": {
+                    title: "Running to Vault",
+                    description: "You limp toward the vault, bullets zipping past your ears—10 meters now, its scanner glowing red under sterile lights. Your cutter’s hot in your hand, ‘X7K9’ a shaky hope as alarms hum louder. Guards shout behind—crack it fast or get caught in the open?",
+                    choices: [
+                        { text: "[A] Cut", nextScene: "scene8A1" },
+                        { text: "[B] Spoof", nextScene: "scene8A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene7B2": {
+                    title: "Fighting Drones",
+                    description: "You swing at a drone—cutter sparks it down in a burst of metal, but guards storm in, rifles blazing. Bullets tear into your side, blood seeping fast—vault’s 50 meters off, unreachable now. No cloak, just raw defiance—make a last stand or surrender?",
+                    choices: [
+                        { text: "[A] Fight", nextScene: "endB" },
+                        { text: "[B] Surrender", nextScene: "scene7E1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene7C1": {
+                    title: "Cutting the Vault",
+                    description: "You slice into the vault—cutter’s roar drowns out everything, alarms shrieking as lasers slash your arm, drawing blood. Guards charge, rifles spitting, but the door cracks enough—Eclipse glints inside, a glowing orb of power. Grab it quick or flee the chaos?",
+                    choices: [
+                        { text: "[A] Grab", nextScene: "scene8D1" },
+                        { text: "[B] Flee", nextScene: "scene8D2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene7C2": {
+                    title: "Spoofing Scanner",
+                    description: "You tweak the ID chip with ‘X7K9’—scanner blinks, then rejects it with a shrill alarm, lasers snapping on to cut your arm. Guards spin, rifles up—vault stays sealed, your fragment useless. Cutter’s your only play now—use it or bolt before they pin you?",
+                    choices: [
+                        { text: "[A] Cut", nextScene: "scene8A1" },
+                        { text: "[B] Run", nextScene: "scene8C2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene7D1": {
+                    title: "Keep Fighting",
+                    description: "You lunge bare-handed—guard slams you down, exosuit pinning your chest, cuffs snapping tight. Vault’s 20 meters away, Eclipse a mocking gleam—rifles cock, your breath ragged. One last struggle or give in?",
+                    choices: [
+                        { text: "[A] Struggle", nextScene: "endB" },
+                        { text: "[B] Surrender", nextScene: "scene8B2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene7D2": {
+                    title: "Surrendering",
+                    description: "You drop, hands up—guards cuff you tight, dragging you off as the vault fades 20 meters behind, its promise slipping away. Omicron’s black site looms—game over or one desperate shot left?",
+                    choices: [
+                        { text: "[A] Accept", nextScene: "endA" },
+                        { text: "[B] Escape", nextScene: "scene7F1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene7E1": {
+                    title: "Surrendering",
+                    description: "You let the cutter fall, hands high—guards swarm, cuffs biting your wrists as they haul you off. The vault’s 50 meters back, a taunting silhouette—Omicron’s got you now, dragging you to darkness. Done or desperate?",
+                    choices: [
+                        { text: "[A] Accept", nextScene: "endA" },
+                        { text: "[B] Break", nextScene: "scene7F1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene7E2": {
+                    title: "Last Stand",
+                    description: "You swing one last time—cutter misses, guards fire, bullets ripping through your chest. Blood pools fast, the vault fading 50 meters away as Eclipse’s glow dims—rain mixes with crimson outside. It’s over.",
+                    choices: [
+                        { text: "[A] Accept", nextScene: "endB" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene7F1": {
+                    title: "Escape Attempt",
+                    description: "You twist hard, elbowing a guard—cuffs slip off one wrist, and you bolt, leg bleeding as alarms scream louder. The vault’s 50 meters behind, drones buzzing with tasers crackling—no gear left, just grit. Keep running or find cover?",
+                    choices: [
+                        { text: "[A] Run", nextScene: "scene8E1" },
+                        { text: "[B] Hide", nextScene: "scene8E2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene8A1": {
+                    title: "Cutting Success",
+                    description: "You cut deeper—the vault splits open, lasers slashing your arm as guards fire, bullets grazing your side. Eclipse is yours, a glowing orb pulsing in your grip—500,000 credits if you can escape this hell. Run for it or fight your way out?",
+                    choices: [
+                        { text: "[A] Run", nextScene: "scene9A1" },
+                        { text: "[B] Fight", nextScene: "scene9A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene8A2": {
+                    title: "Spoofing Fail",
+                    description: "You retry ‘X7K9’—scanner rejects it, alarms wailing as lasers slash your arm, blood dripping fast. Guards charge, vault sealed tight—cutter’s your last shot now as bullets fly. Cut again or flee empty-handed?",
+                    choices: [
+                        { text: "[A] Cut", nextScene: "scene8A1" },
+                        { text: "[B] Flee", nextScene: "scene9B1" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene8B1": {
+                    title: "Fight Lost",
+                    description: "You punch wildly—guard slams you down, cuffs snapping tight as your strength fades. The vault’s 20 meters off, Eclipse a tease—Omicron drags you away, bleeding and beaten. Accept it or break free?",
+                    choices: [
+                        { text: "[A] Capture", nextScene: "endA" },
+                        { text: "[B] Break", nextScene: "scene7F1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene8B2": {
+                    title: "Surrender",
+                    description: "You stop fighting—guards cuff you, hauling you off as the vault vanishes 20 meters back, its promise lost. Omicron’s black site awaits—game over or one last desperate chance?",
+                    choices: [
+                        { text: "[A] Accept", nextScene: "endA" },
+                        { text: "[B] Escape", nextScene: "scene7F1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene8C1": {
+                    title: "Grabbing Eclipse",
+                    description: "You snatch Eclipse—lasers sear your flesh, guards fire, bullets zipping past as you duck low. It’s in your hand, glowing hot—500,000 credits yours if you can get out alive. Run now or fight through the storm?",
+                    choices: [
+                        { text: "[A] Run", nextScene: "scene9A1" },
+                        { text: "[B] Fight", nextScene: "scene9A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene8C2": {
+                    title: "Fleeing",
+                    description: "You bolt—lasers slash your side, bullets graze as you duck into a hall, leaving Eclipse behind, 50 meters back in the open vault. Drones swarm, tasers crackling—no credits, just survival now. Keep running or turn back?",
+                    choices: [
+                        { text: "[A] Run", nextScene: "scene9B1" },
+                        { text: "[B] Back", nextScene: "scene8C1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene8D1": {
+                    title: "Eclipse Secured",
+                    description: "You grab Eclipse—lasers burn your arm, guards fire, blood dripping as bullets fly. It’s yours, pulsing with power—500,000 credits if you escape this chaos. Dash out or fight your way clear?",
+                    choices: [
+                        { text: "[A] Escape", nextScene: "scene9A1" },
+                        { text: "[B] Fight", nextScene: "scene9A2" }
+                    ],
+                    background: "https://unsplash.com/photos/Y5BVtf9pQFI/download?force=true"
+                },
+                "scene8D2": {
+                    title: "Fleeing Empty",
+                    description: "You run—lasers slash, leaving Eclipse 10 meters back in the vault. Bullets graze your side, drones chase—no credits, just your life hanging by a thread. Keep going or turn back for the prize?",
+                    choices: [
+                        { text: "[A] Run", nextScene: "scene9B1" },
+                        { text: "[B] Back", nextScene: "scene8D1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene8E1": {
+                    title: "Running to Exit",
+                    description: "You sprint—drones zap, tasers graze your bleeding leg, but you hit an exit shaft, tumbling out into the Undercity’s rain. Guards are 50 meters back—no Eclipse, no credits, just freedom if you make it. Hide or vanish?",
+                    choices: [
+                        { text: "[A] Hide", nextScene: "scene9C1" },
+                        { text: "[B] Vanish", nextScene: "scene9C2" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene8E2": {
+                    title: "Hiding",
+                    description: "You duck into a vent—drones buzz past, guards sweep below, your blood leaving a faint trail. The vault’s 50 meters back, Eclipse lost—breath ragged, no credits, just survival. Wait it out or make a run?",
+                    choices: [
+                        { text: "[A] Wait", nextScene: "scene9D1" },
+                        { text: "[B] Run", nextScene: "scene9C1" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene9A1": {
+                    title: "Escaping with Eclipse",
+                    description: "Eclipse hums in your grip—bullets zip past, you slide down the shaft, leg bleeding, and burst into the Undercity’s rain-soaked streets. 500,000 credits are yours—deliver it to the client or vanish with the prize?",
+                    choices: [
+                        { text: "[A] Deliver", nextScene: "endC" },
+                        { text: "[B] Vanish", nextScene: "endD" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "scene9A2": {
+                    title: "Fighting Out",
+                    description: "You swing Eclipse as a club—guards reel, one drops, but drones zap you with tasers, frying your arm. Bullets slam in, you collapse—500,000 credits slip away as blood pools fast. It’s over—no escape now.",
+                    choices: [
+                        { text: "[A] Accept", nextScene: "endB" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene9B1": {
+                    title: "Running Empty",
+                    description: "You sprint through the chaos—drones chase, tasers graze, no Eclipse, no credits. You hit a shaft and slide out into the Undercity’s rain, alive but broke—neon flickers around you. Hide or regroup for another shot?",
+                    choices: [
+                        { text: "[A] Hide", nextScene: "endE" },
+                        { text: "[B] Regroup", nextScene: "endF" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "scene9C1": {
+                    title: "Pushing Out",
+                    description: "You push through—leg buckles, tasers graze, but you tumble out into the Undercity’s rain. No Eclipse, no credits—guards swarm behind, but you’re free, bleeding and broke. Hide or vanish into the night?",
+                    choices: [
+                        { text: "[A] Hide", nextScene: "endE" },
+                        { text: "[B] Vanish", nextScene: "endF" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "scene9C2": {
+                    title: "Hiding Out",
+                    description: "You crawl into a vent—drones pass overhead, guards sweep below, your blood a faint trail. No Eclipse, no credits—silence falls as rain drums above, just survival now. Wait it out or slip away?",
+                    choices: [
+                        { text: "[A] Wait", nextScene: "endE" },
+                        { text: "[B] Slip", nextScene: "endF" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "scene9D1": {
+                    title: "Waiting It Out",
+                    description: "You wait in the vent—drones fade, guards pass, your blood clotting as rain drums overhead. No Eclipse, no credits—just alive, broke in the Undercity’s shadows. Stay hidden or move on?",
+                    choices: [
+                        { text: "[A] Stay", nextScene: "endE" },
+                        { text: "[B] Go", nextScene: "endF" }
+                    ],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "endA": {
+                    title: "Captured",
+                    description: "Guards drag you to a black-site cell—cold steel walls close in, neural probes frying your mind as Eclipse slips away forever. 500,000 credits a lost dream—you fade into a drooling shell. Game over.",
+                    choices: [{ text: "Restart", nextScene: "intro" }],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "endB": {
+                    title: "Dead",
+                    description: "Bullets tear through you—blood pools on the floor, the vault fading as Eclipse’s glow dims in the distance. 500,000 credits lost in NeoCity’s shadows—rain washes away your last breath. It’s over.",
+                    choices: [{ text: "Restart", nextScene: "intro" }],
+                    background: "https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                },
+                "endC": {
+                    title: "Delivered",
+                    description: "You deliver Eclipse—client wires 500,000 (or 750,000 if you haggled) credits to your deck. You vanish into the Undercity’s neon sprawl, rich but hunted—Omicron’s trackers close in, a shadow on your tail. Free, for now.",
+                    choices: [{ text: "Restart", nextScene: "intro" }],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "endD": {
+                    title: "Vanished",
+                    description: "You keep Eclipse—no credits, but the AI’s power is yours. You flee NeoCity, a ghost clutching a prize—client and Omicron hunt you across the grid, a legend born in the dark. Alive, loaded, on the run.",
+                    choices: [{ text: "Restart", nextScene: "intro" }],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "endE": {
+                    title: "Hidden",
+                    description: "You hide in the Undercity’s depths—no Eclipse, no credits, just survival among flickering neon and rust. Rain falls outside, Omicron searches—you’re broke but breathing, a shadow among shadows. Try again?",
+                    choices: [{ text: "Restart", nextScene: "intro" }],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                },
+                "endF": {
+                    title: "Regrouped",
+                    description: "You slip away into the Undercity—no Eclipse, no credits, but alive. Neon flickers around you—bloodied, broke, yet ready for another shot. Omicron looms in the distance—next time?",
+                    choices: [{ text: "Restart", nextScene: "intro" }],
+                    background: "https://cdn.pixabay.com/photo/2020/06/17/22/23/cyberpunk-5311772_1280.jpg"
+                }
+            };
+
+// New cursor-following zoom effect
+            const bannerContainer = document.querySelector('.banner-container');
+            const bannerImage = document.querySelector('.banner-image');
+
+            bannerContainer.addEventListener('mousemove', (e) => {
+                const rect = bannerContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left; // X position within container
+                const y = e.clientY - rect.top;  // Y position within container
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                // Calculate movement: slight shift based on cursor position
+                const moveX = (x - centerX) / centerX * 5; // Max 5% shift
+                const moveY = (y - centerY) / centerY * 5;
+
+                // Apply zoom out and slight shift
+                bannerImage.style.transform = `translate(-50%, -50%) scale(0.95) translate(${moveX}%, ${moveY}%)`;
+            });
+
+            bannerContainer.addEventListener('mouseleave', () => {
+                // Reset to original state
+                bannerImage.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+
+            function displayScene(sceneId) {
+                const scene = scenes[sceneId];
+                document.getElementById("title").innerHTML = scene.title;
+                document.getElementById("description").innerHTML = scene.description;
+                document.getElementById("banner-image").src = scene.background;
+                const choicesDiv = document.getElementById("choices");
+                choicesDiv.innerHTML = "";
+                scene.choices.forEach(choice => {
+                    const button = document.createElement("button");
+                    button.innerHTML = choice.text;
+                    button.onclick = () => displayScene(choice.nextScene);
+                    choicesDiv.appendChild(button);
+                });
+            }
+
+            displayScene("intro");
+        });
+    </script>
+</body>
+</html>
